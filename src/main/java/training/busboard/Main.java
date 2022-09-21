@@ -31,26 +31,26 @@ public class Main {
         String testStopId = "490008660N";
 
         // Call to postcode API
-        List<PostCodeResponse> postCodeList = client.target("https://api.postcodes.io")
+        PostCodeResult postCodeList = client.target("https://api.postcodes.io")
                 .path("postcodes/" + postCode)
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(new GenericType<List<PostCodeResponse>>() {});
+                .get(PostCodeResult.class);
         
         // use hashmap to store long/lat KEY: String VALUE: Int
-        for (PostCodeResponse l: postCodeList) {
-            hm.put("longitude", l.getLongitude());
-            hm.put("latitude", l.getLatitude());
-        }
+
+        hm.put("longitude", postCodeList.getResult().getLongitude());
+        hm.put("latitude", postCodeList.getResult().getLatitude());
+
 
         // Call to tfl api for list of bus stops
-        List<BusStopPoints> busStopsList = client.target("https://api.tfl.gov.uk")
+        StopPoints busStopsList = client.target("https://api.tfl.gov.uk")
                 .path("/StopPoint?stopTypes=NaptanOnstreetBusCoachStopPair&lat=" + hm.get("latitude") + "&lon=" + hm.get("longitude"))
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(new GenericType<List<BusStopPoints>>() {});
+                .get(StopPoints.class);
         
-                for (BusStopPoints b: busStopsList) {
-                    nc.put("naptanId", b.getNaptanId());
-                }
+        nc.put("naptanId", busStopsList.getStopPoint().getNaptanId());
+
+        System.out.println(nc.get("naptanId"));
 
         // Call to tfl api for list of next busses
         List<BusResponse> busList = client.target("https://api.tfl.gov.uk")
