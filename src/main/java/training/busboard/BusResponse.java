@@ -14,10 +14,6 @@ public class BusResponse {
         this.lineId = lineId;
     }
 
-    public String getBusId() {
-        return lineId;
-    }
-
     public String getLineId() {
         return lineId;
     }

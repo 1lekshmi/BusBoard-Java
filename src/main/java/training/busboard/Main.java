@@ -6,11 +6,8 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collector;
@@ -26,25 +23,49 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Client client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
 
-        System.out.println("Provide a bus stop ID");
-        String busStop = scanner.nextLine();
+        System.out.println("Provide a postcode");
+        String postCode = scanner.nextLine();
+        HashMap<String, Double> hm = new HashMap<>();
+        HashMap<String, Integer> nc = new HashMap<>();
 
         String testStopId = "490008660N";
 
+        // Call to postcode API
+        List<PostCodeResponse> postCodeList = client.target("https://api.postcodes.io")
+                .path("postcodes/" + postCode)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(new GenericType<List<PostCodeResponse>>() {});
+        
+        // use hashmap to store long/lat KEY: String VALUE: Int
+        for (PostCodeResponse l: postCodeList) {
+            hm.put("longitude", l.getLongitude());
+            hm.put("latitude", l.getLatitude());
+        }
 
-        List<BusResponse> list = client.target("https://api.tfl.gov.uk")
-                .path("StopPoint/" + busStop +"/Arrivals")
+        // Call to tfl api for list of bus stops
+        List<BusStopPoints> busStopsList = client.target("https://api.tfl.gov.uk")
+                .path("/StopPoint?stopTypes=NaptanOnstreetBusCoachStopPair&lat=" + hm.get("latitude") + "&lon=" + hm.get("longitude"))
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(new GenericType<List<BusStopPoints>>() {});
+        
+                for (BusStopPoints b: busStopsList) {
+                    nc.put("naptanId", b.getNaptanId());
+                }
+
+        // Call to tfl api for list of next busses
+        List<BusResponse> busList = client.target("https://api.tfl.gov.uk")
+                .path("StopPoint/" + nc.get("naptanId") +"/Arrivals")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(new GenericType<List<BusResponse>>() {});
 
-        List<BusResponse> sortedList = list.stream()
+        List<BusResponse> sortedList = busList.stream()
             .sorted(Comparator.comparing(BusResponse::getTimeToStation))
             .limit(5)
             .collect(Collectors.toList());
         
             for(BusResponse id: sortedList) {
                 System.out.println("Incoming Bus: " 
-                + id.getBusId() 
+                + id.getLineId() 
                 + " | Arriving in: " 
                 + id.getTimeToStation()
                 + " minutes:");
