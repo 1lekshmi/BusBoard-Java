@@ -1,5 +1,6 @@
 package training.busboard;
 
+
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import jakarta.ws.rs.client.Client;
@@ -30,13 +31,14 @@ public class Main {
        
 
         Response response = client.target("https://api.tfl.gov.uk")
-            .path("StopPoint?stopTypes=NaptanOnstreetBusCoachStopPair&lat=" + latitude + "&lon=" + longitude)
+            // .path("StopPoint?stopTypes=NaptanOnstreetBusCoachStopPair&lat=" + latitude + "&lon=" + longitude)
+            .path(String.format("StopPoint?stopTypes=NaptanOnstreetBusCoachStopPair&lat=%s&lon=%s", latitude, longitude))
             .request(MediaType.APPLICATION_JSON_TYPE)
             .get(Response.class);
+            System.out.println(response.toString());
         
-        // String stopName = res.getCommonName();
         String stopCode = response.getStopPoints().getNaptanId();
-        // System.out.println(stopCode);
+        System.out.println(stopCode);
 
         // List<BusResponse> list = client.target("https://api.tfl.gov.uk")
         //     .path("stoppoint/" + stopCode + "/arrivals")

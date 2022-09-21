@@ -18,28 +18,5 @@ public class Response {
 
 
     
-
-    // private String naptanId;
-
-    // private String commonName;
-
-    
-
-    // public String getNaptanId() {
-    //     return naptanId;
-    // }
-
-    // public void setNaptanId(String naptanId) {
-    //     this.naptanId = naptanId;
-    // }
-
-    // public String getCommonName() {
-    //     return commonName;
-    // }
-
-    // public void setCommonName(String commonName) {
-    //     this.commonName = commonName;
-    // }
-    
     
 
