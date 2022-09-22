@@ -1,14 +1,16 @@
 package training.busboard;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class Response {
 
-    private MyStopPoints stopPoints;
+    private List<MyStopPoints> stopPoints;
 
-    public MyStopPoints getStopPoints() {
+    public List<MyStopPoints> getStopPoints() {
         return stopPoints;
     }
 
