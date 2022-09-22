@@ -1,21 +1,21 @@
-package training.busboard;
+package training.busboard.Response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BusID {
-    private Integer naptanId;
+public class BusIdResponse {
+    private String naptanId;
     private String commonName;
 
-    public BusID() {
+    public BusIdResponse() {
 
     }
 
-    public Integer getNaptanId() {
+    public String getNaptanId() {
         return naptanId;
     }
 
-    public void setNaptanId(Integer naptanId) {
+    public void setNaptanId(String naptanId) {
         this.naptanId = naptanId;
     }
 
