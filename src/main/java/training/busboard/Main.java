@@ -18,6 +18,7 @@ public class Main {
         Client client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
         
         Scanner input = new Scanner(System.in);
+        System.out.println("Enter a postcode: ");
         String postCode = input.nextLine();
         // user inputs the postcode
 
@@ -30,12 +31,6 @@ public class Main {
         Double longitude = postCodeInfo.getResult().getLongitude();
        
 
-        // Response response = client.target("https://api.tfl.gov.uk")
-        //     // .path("StopPoint?stopTypes=NaptanOnstreetBusCoachStopPair&lat=" + latitude + "&lon=" + longitude)
-        //     .path(String.format("StopPoint?stopTypes=NaptanOnstreetBusCoachStopPair&lat=%s&lon=%s", latitude, longitude))
-        //     .request(MediaType.APPLICATION_JSON_TYPE)
-        //     .get(Response.class);
-
         Response response = client.target("https://api.tfl.gov.uk")
             .path("{type}")
             .resolveTemplate("type","StopPoint")
@@ -47,14 +42,15 @@ public class Main {
 
                 
         List<MyStopPoints> stopCodeList = response.getStopPoints();
+
+    
         List<String> stopCodes = stopCodeList.stream()
                                             .map(code -> code.getNaptanId())
                                             .collect(Collectors.toList());
-        // stopCodes.forEach(System.out::println);
+        
         List<String> stopNames = stopCodeList.stream()
                                             .map(code -> code.getCommonName())
                                             .collect(Collectors.toList());
-        // stopNames.forEach(System.out::println);
 
 
         for(int i = 0; i < 2; i++){
@@ -75,10 +71,7 @@ public class Main {
                 
             for(BusResponse id: nextBuses){
                 // format string
-                System.out.println(String.format("Bus: %s ----- Arriving in: %s mins", id.getLineId(), id.getTimeToStation()));
-                
-                // string concatenation
-                // System.out.println(stopName + "\nBus: " + id.getLineId() + "\nArriving in: " + id.getTimeToStation() + " mins");
+                System.out.println(String.format("Bus: %s ----- Arriving in: %s mins", id.getLineId(), id.getTimeToStation()));   
             }
         }
 
