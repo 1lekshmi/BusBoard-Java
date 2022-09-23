@@ -70,7 +70,6 @@ public class Main {
             System.out.println(stopName);
                 
             for(BusResponse id: nextBuses){
-                // format string
                 System.out.println(String.format("Bus: %s ----- Arriving in: %s mins", id.getLineId(), id.getTimeToStation()));   
             }
         }
